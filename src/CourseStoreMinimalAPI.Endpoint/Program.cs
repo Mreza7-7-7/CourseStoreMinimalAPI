@@ -51,4 +51,15 @@ app.MapPut("/categories/{id:int}", async (Category category, CategoryService cat
         return Results.NoContent();
     }
 });
+app.MapDelete("/categories/{id:int}", async (CategoryService categoryService, IOutputCacheStore outputCacheStore, int id) =>
+{
+    if (!await categoryService.Exist(id))
+        return Results.NotFound();
+    else
+    {
+        categoryService.Delete(id);
+        await outputCacheStore.EvictByTagAsync("categories", default);
+        return Results.NoContent();
+    }
+});
 app.Run();

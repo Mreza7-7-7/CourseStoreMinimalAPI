@@ -32,5 +32,10 @@ namespace CourseStoreMinimalAPI.AplicationService
             _ctx.Update(category);
             await _ctx.SaveChangesAsync();
         }
+
+        public async Task Delete(int id)
+        {
+            await _ctx.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
+        }
     }
 }
