@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CourseStoreMinimalAPI.DAL\CourseStoreMinimalAPI.DAL.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CourseStoreMinimalAPI.Entities\CourseStoreMinimalAPI.Entities.csproj" />
   </ItemGroup>
 
