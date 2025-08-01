@@ -57,7 +57,7 @@ app.MapDelete("/categories/{id:int}", async (CategoryService categoryService, IO
         return Results.NotFound();
     else
     {
-        categoryService.Delete(id);
+        await categoryService.Delete(id);
         await outputCacheStore.EvictByTagAsync("categories", default);
         return Results.NoContent();
     }
