@@ -40,4 +40,15 @@ app.MapPost("/categories", async (CategoryService categoryService, IOutputCacheS
     await outputCacheStore.EvictByTagAsync("categories", default);
     return Results.Created($"/categories/{result}", category);
 });
+app.MapPut("/categories/{id:int}", async (Category category, CategoryService categoryService, IOutputCacheStore outputCacheStore, int id) =>
+{
+    if (!await categoryService.Exist(id))
+        return Results.NotFound();
+    else
+    {
+        categoryService.UpdateAsync(category);
+        await outputCacheStore.EvictByTagAsync("categories", default);
+        return Results.NoContent();
+    }
+});
 app.Run();

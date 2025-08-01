@@ -7,6 +7,7 @@ namespace CourseStoreMinimalAPI.AplicationService
 {
     public class CategoryService(CourseDbContext _ctx)
     {
+
         public async Task<List<Category>> GetCategoriesAsync()
         {
             return await _ctx.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).AsNoTrackingWithIdentityResolution().ToListAsync();
@@ -15,11 +16,21 @@ namespace CourseStoreMinimalAPI.AplicationService
         {
             return await _ctx.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<bool> Exist(int id)
+        {
+            return await _ctx.Categories.AnyAsync(c => c.Id == id);
+        }
         public async Task<int> Insert(Category category)
         {
             _ctx.Categories.Add(category);
             await _ctx.SaveChangesAsync();
             return category.Id;
+        }
+
+        public async Task UpdateAsync(Category category)
+        {
+            _ctx.Update(category);
+            await _ctx.SaveChangesAsync();
         }
     }
 }
