@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Scalar.AspNetCore" Version="2.6.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Scalar.AspNetCore" Version="2.6.5" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CourseStoreMinimalAPI.AplicationService\CourseStoreMinimalAPI.AplicationService.csproj" />
-    <ProjectReference Include="..\CourseStoreMinimalAPI.DAL\CourseStoreMinimalAPI.DAL.csproj" />
-    <ProjectReference Include="..\CourseStoreMinimalAPI.Entities\CourseStoreMinimalAPI.Entities.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CourseStoreMinimalAPI.AplicationService\CourseStoreMinimalAPI.AplicationService.csproj" />
+		<ProjectReference Include="..\CourseStoreMinimalAPI.DAL\CourseStoreMinimalAPI.DAL.csproj" />
+		<ProjectReference Include="..\CourseStoreMinimalAPI.Entities\CourseStoreMinimalAPI.Entities.csproj" />
+	</ItemGroup>
 
 </Project>
