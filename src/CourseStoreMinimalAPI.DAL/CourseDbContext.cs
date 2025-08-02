@@ -14,5 +14,6 @@ namespace CourseStoreMinimalAPI.DAL
             base.OnConfiguring(optionsBuilder);
         }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
     }
 }

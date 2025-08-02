@@ -1,8 +1,7 @@
 ﻿namespace CourseStoreMinimalAPI.Entities
 {
-    public class Category
+    public sealed class Category : BaseEntities
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

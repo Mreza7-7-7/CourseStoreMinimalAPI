@@ -8,7 +8,7 @@ namespace CourseStoreMinimalAPI.Endpoint.InfraStructures
     {
         public AutoMapperProfile()
         {
-            CreateMap<CategoryRespons, Category>().ReverseMap();
+            CreateMap<CategoryResponse, Category>().ReverseMap();
             CreateMap<CategoryRequest, Category>().ReverseMap();
         }
     }
