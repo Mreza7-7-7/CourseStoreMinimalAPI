@@ -1,4 +1,6 @@
-﻿using CourseStoreMinimalAPI.AplicationService;
+﻿using AutoMapper;
+using CourseStoreMinimalAPI.AplicationService;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
 using CourseStoreMinimalAPI.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
@@ -17,29 +19,34 @@ public static class Categories
         MGCategories.MapDelete("/{id:int}", Delete);
         return app;
     }
-    static async Task<Ok<List<Category>>> Getlist(CategoryService categoryService)
+    static async Task<Ok<List<CategoryRespons>>> Getlist(CategoryService categoryService, IMapper mapper)
     {
         var result = await categoryService.GetCategoriesAsync();
-        return TypedResults.Ok<List<Category>>(result);
+        var response = mapper.Map<List<CategoryRespons>>(result);
+        return TypedResults.Ok<List<CategoryRespons>>(response);
     }
-    static async Task<Results<NotFound, Ok<Category>>> GetById(CategoryService categoryService, int id)
+    static async Task<Results<NotFound, Ok<CategoryRespons>>> GetById(CategoryService categoryService, int id, IMapper mapper)
     {
         var result = await categoryService.GetCategoriesAsync(id);
-        return result == null ? TypedResults.NotFound() : TypedResults.Ok<Category>(result);
+        var response = mapper.Map<CategoryRespons>(result);
+        return result == null ? TypedResults.NotFound() : TypedResults.Ok<CategoryRespons>(response);
     }
-    static async Task<Created<Category>> Insert(CategoryService categoryService, IOutputCacheStore outputCacheStore, Category category)
+    static async Task<Created<CategoryRespons>> Insert(CategoryService categoryService, IOutputCacheStore outputCacheStore, CategoryRequest categoryRequest, IMapper mapper)
     {
-        var result = categoryService.Insert(category);
+        var request = mapper.Map<Category>(categoryRequest);
+        var result = categoryService.Insert(request);
         await outputCacheStore.EvictByTagAsync("categories", default);
-        return TypedResults.Created($"/categories/{result}", category);
+        var respons = mapper.Map<CategoryRespons>(request);
+        return TypedResults.Created($"/categories/{result}", respons);
     }
-    static async Task<Results<NotFound, NoContent>> Update(Category category, CategoryService categoryService, IOutputCacheStore outputCacheStore, int id)
+    static async Task<Results<NotFound, NoContent>> Update(CategoryRequest categoryRequest, IMapper mapper, CategoryService categoryService, IOutputCacheStore outputCacheStore, int id)
     {
         if (!await categoryService.Exist(id))
             return TypedResults.NotFound();
         else
         {
-            categoryService.UpdateAsync(category);
+            var request = mapper.Map<Category>(categoryRequest);
+            await categoryService.UpdateAsync(request);
             await outputCacheStore.EvictByTagAsync("categories", default);
             return TypedResults.NoContent();
         }

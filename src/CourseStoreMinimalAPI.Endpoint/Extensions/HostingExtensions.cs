@@ -2,7 +2,9 @@
 using CourseStoreMinimalAPI.AplicationService;
 using CourseStoreMinimalAPI.DAL;
 using CourseStoreMinimalAPI.Endpoint.EndPoints;
+using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 
 namespace CourseStoreMinimalAPI.Endpoint.Extensions;
@@ -13,6 +15,7 @@ public static class HostingExtensions
     {
         builder.Services.AddScoped<CategoryService>();
         builder.Services.AddOutputCache();
+        builder.Services.AddAutoMapper(typeof(HostingExtensions));
         AddEFCore(builder);
         return builder.Build();
     }
