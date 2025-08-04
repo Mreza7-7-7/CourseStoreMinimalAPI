@@ -13,7 +13,13 @@ namespace CourseStoreMinimalAPI.DAL
         {
             base.OnConfiguring(optionsBuilder);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Course> Courses { get; set; }
     }
 }
