@@ -5,7 +5,7 @@ using CourseStoreMinimalAPI.Entities;
 
 namespace CourseStoreMinimalAPI.Endpoint.InfraStructures
 {
-    public class AutoMapperProfile : Profile
+    public  class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {

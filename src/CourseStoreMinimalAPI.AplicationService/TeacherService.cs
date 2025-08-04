@@ -13,13 +13,18 @@ namespace CourseStoreMinimalAPI.AplicationService;
 public class TeacherService(CourseDbContext ctx)
 {
     #region Read
-    public async Task<List<Teacher>> GetAll()
+    public async Task<List<Teacher>> GetAll(int pageNumber, int countInPage)
     {
-        return await ctx.Teachers.AsNoTracking().ToListAsync();
+        int skip = (pageNumber - 1) * countInPage;
+        return await ctx.Teachers.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).Skip(skip).Take(countInPage).AsNoTracking().ToListAsync();
+    }
+    public async Task<int> GetTotalCountAsync()
+    {
+        return await ctx.Teachers.CountAsync();
     }
     public async Task<Teacher?> GetTeacherAsync(int id)
     {
-        return await ctx.Teachers.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+        return await ctx.Teachers.FirstOrDefaultAsync(c => c.Id == id);
     }
     public async Task<List<Teacher>> Search(string FirstName = "", string LastName = "")
     {
@@ -32,7 +37,7 @@ public class TeacherService(CourseDbContext ctx)
         {
             teacher = teacher.Where(c => c.LastName.Contains(LastName));
         }
-        return await teacher.AsNoTracking().ToListAsync();
+        return await teacher.AsNoTracking().OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ToListAsync();
     }
     public async Task<bool> Exist(int id)
     {
@@ -40,9 +45,8 @@ public class TeacherService(CourseDbContext ctx)
     }
     #endregion
     #region Command
-    public async Task Update(Teacher teacher)
+    public async Task Update()
     {
-        ctx.Teachers.Update(teacher);
         await ctx.SaveChangesAsync();
     }
     public async Task<int> Insert(Teacher teacher)
@@ -51,9 +55,8 @@ public class TeacherService(CourseDbContext ctx)
         await ctx.SaveChangesAsync();
         return teacher.Id;
     }
-    public async Task Delete(int id)
+    public async Task Delete(Teacher teacher)
     {
-        var teacher = new Teacher { Id = id };
         ctx.Teachers.Remove(teacher);
         await ctx.SaveChangesAsync();
     }

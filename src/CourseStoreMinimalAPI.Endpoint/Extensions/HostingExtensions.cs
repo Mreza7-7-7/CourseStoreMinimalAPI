@@ -1,12 +1,15 @@
 ﻿
+using AutoMapper;
 using CourseStoreMinimalAPI.AplicationService;
 using CourseStoreMinimalAPI.DAL;
 using CourseStoreMinimalAPI.Endpoint.Endpoints;
 using CourseStoreMinimalAPI.Endpoint.EndPoints;
 using CourseStoreMinimalAPI.Endpoint.InfraStructures;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
+using CourseStoreMinimalAPI.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
-
 namespace CourseStoreMinimalAPI.Endpoint.Extensions;
 
 public static class HostingExtensions
@@ -15,16 +18,24 @@ public static class HostingExtensions
     {
         builder.Services.AddScoped<CategoryService>();
         builder.Services.AddOutputCache();
-        builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+        builder.Services.AddAutoMapper(c =>
+        {
+            c.AddProfile(new AutoMapperProfile());
+        });
         builder.Services.AddScoped<TeacherService>();
         builder.Services.AddScoped<IFileAdapter, LocalFileStorageAdapter>();
+        builder.Services.AddOpenApi();
         AddEFCore(builder);
         return builder.Build();
     }
     public static WebApplication ConfigurPipline(this WebApplication app)
     {
         app.UseOutputCache();
-        app.MapScalarApiReference();
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+        }
         app.UseStaticFiles();
         app.MapGet("/", () => "Hello World!");
         app.MapCategories("/categories");

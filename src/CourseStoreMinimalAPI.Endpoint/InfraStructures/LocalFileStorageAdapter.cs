@@ -10,7 +10,8 @@ public class LocalFileStorageAdapter(IHostEnvironment environment) : IFileAdapte
     public string DeleteFile(string fileName, string path)
     {
         var webroot = _environment.ContentRootPath;
-        var finalPath = Path.Combine(webroot, path);
+        var folderPath = Path.Combine(webroot, path);
+        var finalPath = Path.Combine(folderPath, fileName);
         if (File.Exists(finalPath))
         {
             File.Delete(finalPath);

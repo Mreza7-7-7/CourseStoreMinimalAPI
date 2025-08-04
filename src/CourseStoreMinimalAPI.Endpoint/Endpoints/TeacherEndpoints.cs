@@ -7,6 +7,7 @@ using CourseStoreMinimalAPI.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.OpenApi.Validations;
 
 namespace CourseStoreMinimalAPI.Endpoint.Endpoints;
 
@@ -20,10 +21,12 @@ public static class TeacherEndpoints
     {
         _prefix = prefix;
         var MGTeachers = app.MapGroup(prefix);
-        MGTeachers.MapGet("/", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(CacheKey); });
+        MGTeachers.MapGet("/{pageNumber}/{countInPage}", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(CacheKey); });
         MGTeachers.MapGet("/{id:int}", GetById);
+        MGTeachers.MapGet("/search", Search);
+        MGTeachers.MapGet("/totalCount", TotalCount);
         MGTeachers.MapPost("/", Insert).DisableAntiforgery();
-        MGTeachers.MapPut("/{id:int}", Update);
+        MGTeachers.MapPut("/{id:int}", Update).DisableAntiforgery();
         MGTeachers.MapDelete("/{id:int}", Delete);
         return app;
     }
@@ -41,40 +44,58 @@ public static class TeacherEndpoints
         var respons = mapper.Map<TeacherResponse>(teacher);
         return TypedResults.Created($"/{_prefix}/{savedEntityId}", respons);
     }
-    static async Task<Ok<List<CategoryResponse>>> Getlist(CategoryService categoryService, IMapper mapper)
+    static async Task<Ok<List<TeacherResponse>>> Getlist(TeacherService teacherService, int pageNumber, int countInPage, IMapper mapper)
     {
-        var result = await categoryService.GetCategoriesAsync();
-        var response = mapper.Map<List<CategoryResponse>>(result);
-        return TypedResults.Ok<List<CategoryResponse>>(response);
+        var result = await teacherService.GetAll(pageNumber, countInPage);
+        var response = mapper.Map<List<TeacherResponse>>(result);
+        return TypedResults.Ok<List<TeacherResponse>>(response);
     }
-    static async Task<Results<NotFound, Ok<CategoryResponse>>> GetById(CategoryService categoryService, int id, IMapper mapper)
+    static async Task<Ok<int>> TotalCount(TeacherService teacherService)
     {
-        var result = await categoryService.GetCategoriesAsync(id);
-        var response = mapper.Map<CategoryResponse>(result);
-        return result == null ? TypedResults.NotFound() : TypedResults.Ok<CategoryResponse>(response);
+        int totalCount = await teacherService.GetTotalCountAsync();
+        return TypedResults.Ok<int>(totalCount);
     }
-    static async Task<Results<NotFound, NoContent>> Update(CategoryRequest categoryRequest, IMapper mapper, CategoryService categoryService, IOutputCacheStore outputCacheStore, int id)
+    static async Task<Results<NotFound, Ok<TeacherResponse>>> GetById(TeacherService teacherService, int id, IMapper mapper)
     {
-        if (!await categoryService.Exist(id))
+        var result = await teacherService.GetTeacherAsync(id);
+        var response = mapper.Map<TeacherResponse>(result);
+        return result == null ? TypedResults.NotFound() : TypedResults.Ok<TeacherResponse>(response);
+    }
+    static async Task<Results<NotFound, Ok<List<TeacherResponse>>>> Search(TeacherService teacherService, string? firstName, string? lastName, IMapper mapper)
+    {
+        var result = await teacherService.Search(firstName, lastName);
+        var response = mapper.Map<List<TeacherResponse>>(result);
+        return result == null ? TypedResults.NotFound() : TypedResults.Ok<List<TeacherResponse>>(response);
+    }
+    static async Task<Results<NotFound, NoContent>> Update([FromForm] TeacherRequest teacherRequest, IMapper mapper, TeacherService teacherService, IFileAdapter fileAdapter, IOutputCacheStore outputCacheStore, int id)
+    {
+        if (!await teacherService.Exist(id))
             return TypedResults.NotFound();
-        else
+
+        var teacherForSave = await teacherService.GetTeacherAsync(id);
+        var request = mapper.Map<Teacher>(teacherRequest);
+        teacherForSave.FirstName = request.FirstName;
+        teacherForSave.LastName = request.LastName;
+        teacherForSave.Birthdate = request.Birthdate;
+
+        if (teacherRequest.File is not null)
         {
-            var request = mapper.Map<Category>(categoryRequest);
-            await categoryService.UpdateAsync(request);
-            await outputCacheStore.EvictByTagAsync(CacheKey, default);
-            return TypedResults.NoContent();
+            teacherForSave.ImageUrl = fileAdapter.Update(teacherForSave.ImageUrl, teacherRequest.File, TeacherImageFolder);
         }
+        await teacherService.Update();
+        await outputCacheStore.EvictByTagAsync(CacheKey, default);
+        return TypedResults.NoContent();
     }
-    static async Task<Results<NoContent, NotFound>> Delete(CategoryService categoryService, IOutputCacheStore outputCacheStore, int id)
+    static async Task<Results<NoContent, NotFound>> Delete(TeacherService teacherService, IFileAdapter fileAdapter, IOutputCacheStore outputCacheStore, int id)
     {
-        if (!await categoryService.Exist(id))
+        if (!await teacherService.Exist(id))
             return TypedResults.NotFound();
-        else
-        {
-            await categoryService.Delete(id);
-            await outputCacheStore.EvictByTagAsync(CacheKey, default);
-            return TypedResults.NoContent();
-        }
+        var teacher = await teacherService.GetTeacherAsync(id);
+        fileAdapter.DeleteFile(teacher.ImageUrl, TeacherImageFolder);
+        await teacherService.Delete(teacher);
+        await outputCacheStore.EvictByTagAsync(CacheKey, default);
+        return TypedResults.NoContent();
+
     }
 }
 
