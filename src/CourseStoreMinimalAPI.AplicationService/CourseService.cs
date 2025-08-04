@@ -21,7 +21,7 @@ public class CourseService(CourseDbContext ctx)
     {
         return await ctx.Courses.CountAsync();
     }
-    public async Task<Course?> GetTeacherAsync(int id)
+    public async Task<Course?> GetCourseAsync(int id)
     {
         return await ctx.Courses.FirstOrDefaultAsync(c => c.Id == id);
     }
@@ -34,7 +34,7 @@ public class CourseService(CourseDbContext ctx)
         }
         if (isOnline is not null)
         {
-            courses = courses.Where(c => c.isOnline == isOnline);
+            courses = courses.Where(c => c.IsOnline == isOnline);
         }
         return await courses.AsNoTracking().OrderBy(c => c.Title).ThenBy(c => c.StartDate).ToListAsync();
     }

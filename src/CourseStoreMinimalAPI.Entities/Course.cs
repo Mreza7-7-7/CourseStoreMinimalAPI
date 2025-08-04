@@ -12,7 +12,8 @@ public class Course : BaseEntities
     public string Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public bool isOnline { get; set; }
+    public bool IsOnline { get; set; }
     public string ImageUrl { get; set; }
+    public List<Comment> Comments { get; set; }
 }
 
