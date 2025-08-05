@@ -12,5 +12,6 @@ public sealed class Teacher : BaseEntities
     public string LastName { get; set; }
     public string ImageUrl { get; set; }
     public DateTime Birthdate { get; set; }
+    public List<CourseTeacher> courseTeachers { get; set; }
 }
 

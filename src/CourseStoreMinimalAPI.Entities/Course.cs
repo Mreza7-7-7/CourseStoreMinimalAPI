@@ -15,5 +15,7 @@ public class Course : BaseEntities
     public bool IsOnline { get; set; }
     public string ImageUrl { get; set; }
     public List<Comment> Comments { get; set; }
+    public List<CourseTeacher> CourseTeachers { get; set; }
+    public List<CourseCategory> courseCategories { get; set; }
 }
 

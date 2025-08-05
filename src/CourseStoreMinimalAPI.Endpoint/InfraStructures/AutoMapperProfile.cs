@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using CourseStoreMinimalAPI.DAL.Migrations;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CommentRequestsAndResponses;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CourseRequestsAndResponses;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRAR;
 using CourseStoreMinimalAPI.Entities;
@@ -16,6 +18,10 @@ namespace CourseStoreMinimalAPI.Endpoint.InfraStructures
             CreateMap<TeacherResponse, Teacher>().ReverseMap();
             CreateMap<CourseRequest, Course>().ReverseMap();
             CreateMap<CourseResponse, Course>().ReverseMap();
+            CreateMap<CourseWithCommentResponse, Course>().ReverseMap();
+            CreateMap<CommentResponse,comment>().ReverseMap();
+            CreateMap<CommentRequest,comment>().ReverseMap();
+
         }
     }
 }

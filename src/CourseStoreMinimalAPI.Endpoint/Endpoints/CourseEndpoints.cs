@@ -19,14 +19,16 @@ public static class CourseEndpoints
     public static WebApplication MapCourses(this WebApplication app, string prefix)
     {
         _prefix = prefix;
-        var MGTeachers = app.MapGroup(prefix);
-        MGTeachers.MapGet("/{pageNumber}/{countInPage}", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(CacheKey); });
-        MGTeachers.MapGet("/{id:int}", GetById);
-        MGTeachers.MapGet("/search", Search);
-        MGTeachers.MapGet("/totalCount", TotalCount);
-        MGTeachers.MapPost("/", Insert).DisableAntiforgery();
-        MGTeachers.MapPut("/{id:int}", Update).DisableAntiforgery();
-        MGTeachers.MapDelete("/{id:int}", Delete);
+        var MGCourses = app.MapGroup(prefix);
+        MGCourses.MapGet("/{pageNumber}/{countInPage}", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(CacheKey); });
+        MGCourses.MapGet("/{id:int}", GetById);
+        MGCourses.MapGet("/GetByIdWithComments/{id:int}", GetByIdWithComments);
+        MGCourses.MapGet("/search", Search);
+        MGCourses.MapGet("/totalCount", TotalCount);
+        MGCourses.MapPost("/", Insert).DisableAntiforgery();
+        MGCourses.MapPut("/{id:int}", Update).DisableAntiforgery();
+        MGCourses.MapPut("/AddTeacher/{id:int}/{teacherId:int}/{sortId:int}", AddTeacher).DisableAntiforgery();
+        MGCourses.MapDelete("/{id:int}", Delete);
         return app;
     }
     static async Task<Created<CourseResponse>> Insert(CourseService courseService, IFileAdapter fileAdapter, IOutputCacheStore outputCacheStore, [FromForm] CourseRequest courseRequest, IMapper mapper)
@@ -59,6 +61,12 @@ public static class CourseEndpoints
         var result = await courseService.GetCourseAsync(id);
         var response = mapper.Map<CourseResponse>(result);
         return result == null ? TypedResults.NotFound() : TypedResults.Ok<CourseResponse>(response);
+    }
+    static async Task<Results<NotFound, Ok<CourseWithCommentResponse>>> GetByIdWithComments(CourseService courseService, int id, IMapper mapper)
+    {
+        var result = await courseService.GetCourseWithCommentAsync(id);
+        var response = mapper.Map<CourseWithCommentResponse>(result);
+        return result == null ? TypedResults.NotFound() : TypedResults.Ok<CourseWithCommentResponse>(response);
     }
     static async Task<Results<NotFound, Ok<List<CourseResponse>>>> Search(CourseService courseService, string? title, bool? isOnline, IMapper mapper)
     {
@@ -94,6 +102,15 @@ public static class CourseEndpoints
         var course = await courseService.GetCourseAsync(id);
         fileAdapter.DeleteFile(course.ImageUrl, CourseImageFolder);
         await courseService.Delete(course);
+        await outputCacheStore.EvictByTagAsync(CacheKey, default);
+        return TypedResults.NoContent();
+    }
+    static async Task<Results<NotFound, NoContent>> AddTeacher(CourseService courseService, [FromForm] CourseRequest courseRequest, IMapper mapper, IOutputCacheStore outputCacheStore, int id, int teacherId, int sortId)
+    {
+        if (!await courseService.Exist(id))
+            return TypedResults.NotFound();
+
+        await courseService.AddTeacher(id, teacherId, sortId);
         await outputCacheStore.EvictByTagAsync(CacheKey, default);
         return TypedResults.NoContent();
     }

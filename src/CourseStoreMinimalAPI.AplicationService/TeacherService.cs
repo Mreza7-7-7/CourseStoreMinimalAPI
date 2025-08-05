@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseStoreMinimalAPI.AplicationService;
 
-public class TeacherService(CourseDbContext ctx)
+public class TeacherService(CourseStoreDbContext ctx)
 {
     #region Read
     public async Task<List<Teacher>> GetAll(int pageNumber, int countInPage)

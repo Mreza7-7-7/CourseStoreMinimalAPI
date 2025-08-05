@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseStoreMinimalAPI.AplicationService;
 
-public class CourseService(CourseDbContext ctx)
+public class CourseService(CourseStoreDbContext ctx)
 {
     #region Read
     public async Task<List<Course>> GetAll(int pageNumber, int countInPage)
@@ -24,6 +24,10 @@ public class CourseService(CourseDbContext ctx)
     public async Task<Course?> GetCourseAsync(int id)
     {
         return await ctx.Courses.FirstOrDefaultAsync(c => c.Id == id);
+    }
+    public async Task<Course?> GetCourseWithCommentAsync(int id)
+    {
+        return await ctx.Courses.Include(c => c.Comments).FirstOrDefaultAsync(c => c.Id == id);
     }
     public async Task<List<Course>> Search(string title, bool? isOnline)
     {
@@ -57,6 +61,16 @@ public class CourseService(CourseDbContext ctx)
     public async Task Delete(Course course)
     {
         ctx.Courses.Remove(course);
+        await ctx.SaveChangesAsync();
+    }
+    public async Task AddTeacher(int courseId, int teacherId, int sortOrder)
+    {
+        var course = await ctx.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+        course.CourseTeachers.Add(new CourseTeacher
+        {
+            TeacherID = teacherId,
+            SortOrder = sortOrder
+        });
         await ctx.SaveChangesAsync();
     }
     #endregion

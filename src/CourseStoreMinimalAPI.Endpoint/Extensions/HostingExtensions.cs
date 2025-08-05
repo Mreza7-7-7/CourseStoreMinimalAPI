@@ -17,12 +17,14 @@ public static class HostingExtensions
     public static WebApplication ConfigurServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<CategoryService>();
+        builder.Services.AddScoped<TeacherService>();
+        builder.Services.AddScoped<CourseService>();
+        builder.Services.AddScoped<CommentService>();
         builder.Services.AddOutputCache();
         builder.Services.AddAutoMapper(c =>
         {
             c.AddProfile(new AutoMapperProfile());
         });
-        builder.Services.AddScoped<TeacherService>();
         builder.Services.AddScoped<IFileAdapter, LocalFileStorageAdapter>();
         builder.Services.AddOpenApi();
         AddEFCore(builder);
@@ -40,12 +42,13 @@ public static class HostingExtensions
         app.MapGet("/", () => "Hello World!");
         app.MapCategories("/categories");
         app.MapTeachers("/teachers");
+        app.MapComments("/comments");
         return app;
     }
     private static void AddEFCore(WebApplicationBuilder builder)
     {
         string connectionString = builder.Configuration.GetConnectionString("CourseCnn");
-        builder.Services.AddDbContext<CourseDbContext>(c =>
+        builder.Services.AddDbContext<CourseStoreDbContext>(c =>
         {
             c.UseSqlServer(connectionString);
         });

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CourseStoreMinimalAPI.DAL
 {
-    public class CourseDbContext : DbContext
+    public class CourseStoreDbContext : DbContext
     {
-        public CourseDbContext(DbContextOptions<CourseDbContext> options) : base(options)
+        public CourseStoreDbContext(DbContextOptions<CourseStoreDbContext> options) : base(options)
         {
         }
 
@@ -21,5 +21,8 @@ namespace CourseStoreMinimalAPI.DAL
         public DbSet<Category> Categories { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CourseCategory> CourseCategories { get; set; }
+        public DbSet<CourseTeacher> CourseTeachers { get; set; }
     }
 }

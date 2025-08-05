@@ -5,37 +5,37 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace CourseStoreMinimalAPI.AplicationService
 {
-    public class CategoryService(CourseDbContext _ctx)
+    public class CategoryService(CourseStoreDbContext ctx)
     {
 
         public async Task<List<Category>> GetCategoriesAsync()
         {
-            return await _ctx.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).AsNoTrackingWithIdentityResolution().ToListAsync();
+            return await ctx.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).AsNoTrackingWithIdentityResolution().ToListAsync();
         }
         public async Task<Category?> GetCategoriesAsync(int id)
         {
-            return await _ctx.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            return await ctx.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<bool> Exist(int id)
         {
-            return await _ctx.Categories.AnyAsync(c => c.Id == id);
+            return await ctx.Categories.AnyAsync(c => c.Id == id);
         }
         public async Task<int> Insert(Category category)
         {
-            _ctx.Categories.Add(category);
-            await _ctx.SaveChangesAsync();
+            ctx.Categories.Add(category);
+            await ctx.SaveChangesAsync();
             return category.Id;
         }
 
         public async Task UpdateAsync(Category category)
         {
-            _ctx.Update(category);
-            await _ctx.SaveChangesAsync();
+            ctx.Update(category);
+            await ctx.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
         {
-            await _ctx.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
+            await ctx.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
         }
     }
 }

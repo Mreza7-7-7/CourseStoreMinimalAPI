@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CourseStoreMinimalAPI.DAL.Migrations
 {
-    [DbContext(typeof(CourseDbContext))]
+    [DbContext(typeof(CourseStoreDbContext))]
     [Migration("20250804123652_init2")]
     partial class init2
     {
