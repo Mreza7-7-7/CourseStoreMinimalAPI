@@ -3,6 +3,7 @@ using CourseStoreMinimalAPI.AplicationService;
 using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRAR;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRequestAndResponses;
 using CourseStoreMinimalAPI.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -31,22 +32,18 @@ public static class TeacherEndpoints
         MGTeachers.MapDelete("/{id:int}", Delete);
         return app;
     }
-    static async Task<Results<Created<TeacherResponse>, ValidationProblem>> Insert(TeacherService teacherService,
-                                                       IFileAdapter fileAdapter,
-                                                       IOutputCacheStore outputCacheStore,
-                                                       [FromForm] TeacherRequest teacherRequest,
-                                                       IMapper mapper)
+    static async Task<Results<Created<TeacherResponse>, ValidationProblem>> Insert([AsParameters] TeacherParameters parameters, [FromForm] TeacherRequest teacherRequest)
     {
-        var teacher = mapper.Map<Teacher>(teacherRequest);
+        var teacher = parameters.Mapper.Map<Teacher>(teacherRequest);
         string fileName = DefaultTeacherImageName;
         if (teacherRequest.File is not null)
         {
-            fileName = fileAdapter.InsertFile(teacherRequest.File, TeacherImageFolder);
+            fileName = parameters.FileAdapter.InsertFile(teacherRequest.File, TeacherImageFolder);
         }
         teacher.ImageUrl = fileName;
-        var savedEntityId = teacherService.Insert(teacher);
-        await outputCacheStore.EvictByTagAsync(CacheKey, default);
-        var respons = mapper.Map<TeacherResponse>(teacher);
+        var savedEntityId = parameters.TeacherService.Insert(teacher);
+        await parameters.OutputCacheStore.EvictByTagAsync(CacheKey, default);
+        var respons = parameters.Mapper.Map<TeacherResponse>(teacher);
         return TypedResults.Created($"/{_prefix}/{savedEntityId}", respons);
     }
     static async Task<Ok<List<TeacherResponse>>> Getlist(TeacherService teacherService, int pageNumber, int countInPage, IMapper mapper)
