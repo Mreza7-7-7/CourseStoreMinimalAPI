@@ -4,6 +4,7 @@ using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRAR;
 using CourseStoreMinimalAPI.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -30,8 +31,18 @@ public static class TeacherEndpoints
         MGTeachers.MapDelete("/{id:int}", Delete);
         return app;
     }
-    static async Task<Created<TeacherResponse>> Insert(TeacherService teacherService, IFileAdapter fileAdapter, IOutputCacheStore outputCacheStore, [FromForm] TeacherRequest teacherRequest, IMapper mapper)
+    static async Task<Results<Created<TeacherResponse>, ValidationProblem>> Insert(TeacherService teacherService,
+                                                       IFileAdapter fileAdapter,
+                                                       IOutputCacheStore outputCacheStore,
+                                                       [FromForm] TeacherRequest teacherRequest,
+                                                       IValidator<TeacherRequest> validator,
+                                                       IMapper mapper)
     {
+        var validationResult = validator.Validate(teacherRequest);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
+        }
         var teacher = mapper.Map<Teacher>(teacherRequest);
         string fileName = DefaultTeacherImageName;
         if (teacherRequest.File is not null)

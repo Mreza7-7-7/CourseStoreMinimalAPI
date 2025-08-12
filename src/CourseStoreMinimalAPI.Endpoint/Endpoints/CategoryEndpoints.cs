@@ -1,7 +1,10 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using CourseStoreMinimalAPI.AplicationService;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CourseRequestsAndResponses;
 using CourseStoreMinimalAPI.Entities;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -34,8 +37,17 @@ public static class Categories
         var response = mapper.Map<CategoryResponse>(result);
         return result == null ? TypedResults.NotFound() : TypedResults.Ok<CategoryResponse>(response);
     }
-    static async Task<Created<CategoryResponse>> Insert(CategoryService categoryService, IOutputCacheStore outputCacheStore, CategoryRequest categoryRequest, IMapper mapper)
+    static async Task<Results<Created<CategoryResponse>, ValidationProblem>> Insert(CategoryService categoryService,
+                                                        IOutputCacheStore outputCacheStore,
+                                                        CategoryRequest categoryRequest,
+                                                        IValidator<CategoryRequest> validator,
+                                                        IMapper mapper)
     {
+        var validationResult = validator.Validate(categoryRequest);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
+        }
         var category = mapper.Map<Category>(categoryRequest);
         var savedEntityId = categoryService.Insert(category);
         await outputCacheStore.EvictByTagAsync(Cachekey, default);

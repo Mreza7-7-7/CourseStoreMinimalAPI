@@ -36,33 +36,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CommentBody")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Comment");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Course", b =>
@@ -87,9 +61,6 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<bool>("IsOnline")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -98,9 +69,12 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<bool>("isOnline")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Teacher", b =>
@@ -128,21 +102,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teachers");
-                });
-
-            modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Comment", b =>
-                {
-                    b.HasOne("CourseStoreMinimalAPI.Entities.Course", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Course", b =>
-                {
-                    b.Navigation("Comments");
+                    b.ToTable("Teachers", (string)null);
                 });
 #pragma warning restore 612, 618
         }

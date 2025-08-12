@@ -6,9 +6,9 @@ using CourseStoreMinimalAPI.Endpoint.Endpoints;
 using CourseStoreMinimalAPI.Endpoint.EndPoints;
 using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
-using CourseStoreMinimalAPI.Entities;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRequestAndResponses;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 namespace CourseStoreMinimalAPI.Endpoint.Extensions;
 
@@ -21,6 +21,7 @@ public static class HostingExtensions
         builder.Services.AddScoped<CourseService>();
         builder.Services.AddScoped<CommentService>();
         builder.Services.AddOutputCache();
+        builder.Services.AddValidatorsFromAssembly(typeof(TeacherRequestValidator).Assembly);
         builder.Services.AddAutoMapper(c =>
         {
             c.AddProfile(new AutoMapperProfile());
