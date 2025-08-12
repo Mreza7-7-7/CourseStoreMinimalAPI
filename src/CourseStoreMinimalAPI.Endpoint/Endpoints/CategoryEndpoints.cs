@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using CourseStoreMinimalAPI.AplicationService;
+using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
+using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRequestsAndResponses;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CourseRequestsAndResponses;
 using CourseStoreMinimalAPI.Entities;
 using FluentValidation;
@@ -18,10 +20,10 @@ public static class Categories
     {
         _prefix = prefix;
         var MGCategories = app.MapGroup(prefix);
-        MGCategories.MapGet("/", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(Cachekey); });
+        MGCategories.MapGet("/", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(Cachekey); }).AddEndpointFilter<LoggerFilter>();
         MGCategories.MapGet("/{id:int}", GetById);
-        MGCategories.MapPost("/", Insert);
-        MGCategories.MapPut("/{id:int}", Update);
+        MGCategories.MapPost("/", Insert).AddEndpointFilter<ValidationFilter<CategoryRequest>>();
+        MGCategories.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CategoryRequest>>();
         MGCategories.MapDelete("/{id:int}", Delete);
         return app;
     }
@@ -40,14 +42,8 @@ public static class Categories
     static async Task<Results<Created<CategoryResponse>, ValidationProblem>> Insert(CategoryService categoryService,
                                                         IOutputCacheStore outputCacheStore,
                                                         CategoryRequest categoryRequest,
-                                                        IValidator<CategoryRequest> validator,
                                                         IMapper mapper)
     {
-        var validationResult = validator.Validate(categoryRequest);
-        if (!validationResult.IsValid)
-        {
-            return TypedResults.ValidationProblem(validationResult.ToDictionary());
-        }
         var category = mapper.Map<Category>(categoryRequest);
         var savedEntityId = categoryService.Insert(category);
         await outputCacheStore.EvictByTagAsync(Cachekey, default);

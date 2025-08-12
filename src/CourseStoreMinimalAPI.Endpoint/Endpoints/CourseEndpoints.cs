@@ -26,8 +26,8 @@ public static class CourseEndpoints
         MGCourses.MapGet("/GetByIdWithComments/{id:int}", GetByIdWithComments);
         MGCourses.MapGet("/search", Search);
         MGCourses.MapGet("/totalCount", TotalCount);
-        MGCourses.MapPost("/", Insert).DisableAntiforgery();
-        MGCourses.MapPut("/{id:int}", Update).DisableAntiforgery();
+        MGCourses.MapPost("/", Insert).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CourseRequest>>();
+        MGCourses.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CourseRequest>>();
         MGCourses.MapPut("/AddTeacher/{id:int}/{teacherId:int}/{sortId:int}", AddTeacher).DisableAntiforgery();
         MGCourses.MapDelete("/{id:int}", Delete);
         return app;

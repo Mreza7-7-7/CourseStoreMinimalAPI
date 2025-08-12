@@ -26,8 +26,8 @@ public static class TeacherEndpoints
         MGTeachers.MapGet("/{id:int}", GetById);
         MGTeachers.MapGet("/search", Search);
         MGTeachers.MapGet("/totalCount", TotalCount);
-        MGTeachers.MapPost("/", Insert).DisableAntiforgery();
-        MGTeachers.MapPut("/{id:int}", Update).DisableAntiforgery();
+        MGTeachers.MapPost("/", Insert).DisableAntiforgery().AddEndpointFilter<ValidationFilter<TeacherRequest>>();
+        MGTeachers.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<TeacherRequest>>();
         MGTeachers.MapDelete("/{id:int}", Delete);
         return app;
     }
@@ -35,14 +35,8 @@ public static class TeacherEndpoints
                                                        IFileAdapter fileAdapter,
                                                        IOutputCacheStore outputCacheStore,
                                                        [FromForm] TeacherRequest teacherRequest,
-                                                       IValidator<TeacherRequest> validator,
                                                        IMapper mapper)
     {
-        var validationResult = validator.Validate(teacherRequest);
-        if (!validationResult.IsValid)
-        {
-            return TypedResults.ValidationProblem(validationResult.ToDictionary());
-        }
         var teacher = mapper.Map<Teacher>(teacherRequest);
         string fileName = DefaultTeacherImageName;
         if (teacherRequest.File is not null)

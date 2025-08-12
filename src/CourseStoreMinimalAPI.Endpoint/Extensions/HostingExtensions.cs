@@ -22,6 +22,7 @@ public static class HostingExtensions
         builder.Services.AddScoped<CommentService>();
         builder.Services.AddOutputCache();
         builder.Services.AddValidatorsFromAssembly(typeof(TeacherRequestValidator).Assembly);
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddAutoMapper(c =>
         {
             c.AddProfile(new AutoMapperProfile());

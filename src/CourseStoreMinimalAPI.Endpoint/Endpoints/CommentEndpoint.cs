@@ -21,8 +21,8 @@ public static class CommentEndpoint
         MGComments.MapGet("/{CourseId:int}", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(CacheKey); });
         MGComments.MapGet("/{id:int}", GetById);
         MGComments.MapGet("/totalCount/{CourseId:int}", TotalCount);
-        MGComments.MapPost("/", Insert).DisableAntiforgery();
-        MGComments.MapPut("/{id:int}", Update).DisableAntiforgery();
+        MGComments.MapPost("/", Insert).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CommentRequest>>();
+        MGComments.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CommentRequest>>();
         MGComments.MapDelete("/{id:int}", Delete);
         return app;
     }
