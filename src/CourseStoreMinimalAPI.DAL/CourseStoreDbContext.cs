@@ -1,9 +1,10 @@
 ﻿using CourseStoreMinimalAPI.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseStoreMinimalAPI.DAL
 {
-    public class CourseStoreDbContext : DbContext
+    public class CourseStoreDbContext : IdentityDbContext
     {
         public CourseStoreDbContext(DbContextOptions<CourseStoreDbContext> options) : base(options)
         {

@@ -20,7 +20,7 @@ public static class Categories
     {
         _prefix = prefix;
         var MGCategories = app.MapGroup(prefix);
-        MGCategories.MapGet("/", Getlist).CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(Cachekey); }).AddEndpointFilter<LoggerFilter>();
+        MGCategories.MapGet("/", Getlist).RequireAuthorization().CacheOutput(c => { c.Expire(TimeSpan.FromMinutes(20)).Tag(Cachekey); }).AddEndpointFilter<LoggerFilter>();
         MGCategories.MapGet("/{id:int}", GetById);
         MGCategories.MapPost("/", Insert).AddEndpointFilter<ValidationFilter<CategoryRequest>>();
         MGCategories.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CategoryRequest>>();

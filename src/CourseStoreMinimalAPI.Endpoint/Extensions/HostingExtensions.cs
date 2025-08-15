@@ -8,7 +8,9 @@ using CourseStoreMinimalAPI.Endpoint.InfraStructures;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.TeacherRequestAndResponses;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 namespace CourseStoreMinimalAPI.Endpoint.Extensions;
 
@@ -23,6 +25,21 @@ public static class HostingExtensions
         builder.Services.AddOutputCache();
         builder.Services.AddValidatorsFromAssembly(typeof(TeacherRequestValidator).Assembly);
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddAuthentication().AddJwtBearer(c =>
+        {
+            c.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["JWT:Issuer"],
+                ValidateLifetime = true,
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["JWT:Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT: Key"]))
+            };
+
+        });
+        builder.Services.AddAuthorization();
         builder.Services.AddAutoMapper(c =>
         {
             c.AddProfile(new AutoMapperProfile());
@@ -30,6 +47,9 @@ public static class HostingExtensions
         builder.Services.AddScoped<IFileAdapter, LocalFileStorageAdapter>();
         builder.Services.AddOpenApi();
         AddEFCore(builder);
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<CourseStoreDbContext>().AddDefaultTokenProviders();
+        builder.Services.AddScoped<UserManager<IdentityUser>>();
+        builder.Services.AddScoped<SignInManager<IdentityUser>>();
         return builder.Build();
     }
     public static WebApplication ConfigurPipline(this WebApplication app)
@@ -41,10 +61,12 @@ public static class HostingExtensions
             app.MapScalarApiReference();
         }
         app.UseStaticFiles();
+        app.UseAuthorization();
         app.MapGet("/", () => "Hello World!");
         app.MapCategories("/categories");
         app.MapTeachers("/teachers");
         app.MapComments("/comments");
+        app.MapUsers("users");
         return app;
     }
     private static void AddEFCore(WebApplicationBuilder builder)
