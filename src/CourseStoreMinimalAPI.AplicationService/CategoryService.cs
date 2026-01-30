@@ -7,7 +7,6 @@ namespace CourseStoreMinimalAPI.AplicationService;
 
 public class CategoryService(CourseStoreDbContext ctx)
 {
-
     public async Task<List<Category>> GetCategoriesAsync()
     {
         return await ctx.Categories.OrderBy(c => c.Name).ThenBy(c => c.Id).AsNoTrackingWithIdentityResolution().ToListAsync();
@@ -26,13 +25,11 @@ public class CategoryService(CourseStoreDbContext ctx)
         await ctx.SaveChangesAsync();
         return category.Id;
     }
-
     public async Task UpdateAsync(Category category)
     {
         ctx.Update(category);
         await ctx.SaveChangesAsync();
     }
-
     public async Task Delete(int id)
     {
         await ctx.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();

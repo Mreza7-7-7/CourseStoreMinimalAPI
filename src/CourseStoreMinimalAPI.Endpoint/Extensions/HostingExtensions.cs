@@ -37,7 +37,6 @@ public static class HostingExtensions
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT: Key"]))
             };
-
         });
         builder.Services.AddAuthorization();
         builder.Services.AddAutoMapper(c =>

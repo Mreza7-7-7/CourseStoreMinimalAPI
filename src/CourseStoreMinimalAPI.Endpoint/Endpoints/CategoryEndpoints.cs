@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.OutputCaching;
 
 namespace CourseStoreMinimalAPI.Endpoint.EndPoints;
 
-public static class Categories
+public static class CategoryEndpoints
 {
     static string Cachekey = "categories";
     private static string _prefix;

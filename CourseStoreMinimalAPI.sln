@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseStoreMinimalAPI.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseStoreMinimalAPI.DAL", "src\CourseStoreMinimalAPI.DAL\CourseStoreMinimalAPI.DAL.csproj", "{F5973960-968F-453E-B6A0-CAC1EB4966C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A9EA166E-B62D-472B-9840-F4AEB5D984E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseStoreMinimalAPI.Endpoint.Test", "Test\CourseStoreMinimalAPI.Endpoint.Test\CourseStoreMinimalAPI.Endpoint.Test.csproj", "{2AD5E4DB-80B1-49EC-8089-D682350CD1C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{F5973960-968F-453E-B6A0-CAC1EB4966C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5973960-968F-453E-B6A0-CAC1EB4966C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5973960-968F-453E-B6A0-CAC1EB4966C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AD5E4DB-80B1-49EC-8089-D682350CD1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AD5E4DB-80B1-49EC-8089-D682350CD1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AD5E4DB-80B1-49EC-8089-D682350CD1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AD5E4DB-80B1-49EC-8089-D682350CD1C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,7 @@ Global
 		{46B4B092-43E1-45A8-99DB-E08AD7604ECF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FA014CAC-91EF-43E5-8754-A1A884679271} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F5973960-968F-453E-B6A0-CAC1EB4966C2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2AD5E4DB-80B1-49EC-8089-D682350CD1C4} = {A9EA166E-B62D-472B-9840-F4AEB5D984E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2C6DA387-7CB5-44CE-AABD-BC5C8F3E29A8}

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CourseStoreMinimalAPI.Entities
+namespace CourseStoreMinimalAPI.Entities;
+
+public abstract class BaseEntities
 {
-    public abstract class BaseEntities
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }
+

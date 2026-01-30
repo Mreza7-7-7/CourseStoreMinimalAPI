@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CourseStoreMinimalAPI.DAL.Migrations;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CategoryRAR;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CommentRequestsAndResponses;
 using CourseStoreMinimalAPI.Endpoint.RequestsAndResponses.CourseRequestsAndResponses;

@@ -36,7 +36,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Comment", b =>
@@ -62,7 +62,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Course", b =>
@@ -100,7 +100,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.CourseCategory", b =>
@@ -123,7 +123,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseCategories");
+                    b.ToTable("CourseCategories", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.CourseTeacher", b =>
@@ -141,7 +141,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasIndex("TeacherID");
 
-                    b.ToTable("CourseTeachers");
+                    b.ToTable("CourseTeachers", (string)null);
                 });
 
             modelBuilder.Entity("CourseStoreMinimalAPI.Entities.Teacher", b =>
@@ -169,7 +169,7 @@ namespace CourseStoreMinimalAPI.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
